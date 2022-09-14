@@ -7,10 +7,10 @@ export class Admin {
     @PrimaryGeneratedColumn()
     id:string
 
-    @Column()
+    @Column({unique:true})
     username: string
 
-    @Column()
+    @Column({unique:true})
     email:string
 
     @Column()

@@ -9,9 +9,13 @@ export class AdminController {
 
   @Post('signup')
   create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+    return this.adminService.signUp(createAdminDto);
   }
 
+  @Post('signin')
+  signin(@Body() createAdminDto: CreateAdminDto) {
+    return this.adminService.signIn(createAdminDto);
+  }
   
 
   @Get()
