@@ -23,9 +23,6 @@ import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
     @Column()
     quantity: number
 
-   //  @Column()
-   //  borrow: bookId,studentid,timestamps,return-null,refund,fine-null,comments
-   //order: orderid ,
 
    @OneToMany(() => Order, (order) => order.book, {
       cascade: true,
@@ -33,6 +30,7 @@ import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
       onUpdate: 'CASCADE',
     })
     order: Order[];
+    
 
    
 
