@@ -1,6 +1,5 @@
 
-// import { Issue } from 'src/issuer/issue.entity'
-import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
+import {Entity,PrimaryGeneratedColumn,Column} from 'typeorm'
 
 
 @Entity()
@@ -25,16 +24,8 @@ import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
     quantity: number
 
 
-   // @OneToMany(() => Issue, (issue) => issue.book, {
-   //    cascade: true,
-   //    onDelete: 'CASCADE',
-   //    onUpdate: 'CASCADE',
-   //  })
-   //  issue: Issue[];
-    
 
    
 
 }
 
-//
