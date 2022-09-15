@@ -64,6 +64,8 @@ if(!book){
   throw new NotFoundException();
 }
 book.bookName = updateBookDto.bookName
+book.available = updateBookDto.available
+
    await this.bookRepository.save(book);
     return book
   }

@@ -19,5 +19,6 @@ export class UpdateBookDto extends PartialType(CreateBookDto) {
     @IsString()
     category:string
 
-  
+   @IsString()
+   available:boolean
 }

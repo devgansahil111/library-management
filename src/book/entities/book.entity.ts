@@ -1,31 +1,36 @@
 
-import {Entity,PrimaryGeneratedColumn,Column} from 'typeorm'
+import { Employee } from 'src/employee/entities/employee.entity'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 
 
 @Entity()
- export class Book {
+export class Book {
 
-    @PrimaryGeneratedColumn('uuid')
-    id:string
+   @PrimaryGeneratedColumn('uuid')
+   id: string
 
-    @Column({unique:true})
-    bookName: string
-    
-    @Column()
-    description: string
+   @Column({ unique: true })
+   bookName: string
 
-    @Column()
-    authorName : string
+   @Column()
+   description: string
 
-    @Column()
-    category: string
+   @Column()
+   authorName: string
 
-    @Column()
-    quantity: number
+   @Column()
+   category: string
+
+   @Column()
+   quantity: number
+
+   @Column({ default: false })
+   available: boolean
 
 
-
-   
+   @ManyToOne(() => Employee, (employee) => employee.book,
+   {onDelete:"NO ACTION"})
+   employee: Employee
 
 }
 

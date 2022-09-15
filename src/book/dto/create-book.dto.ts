@@ -17,6 +17,7 @@ export class CreateBookDto {
     @IsString()
     category:string
 
-   
+   @IsString()
+   available:boolean
 
 }

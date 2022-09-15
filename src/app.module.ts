@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin/admin.module';
 import { BookModule } from './book/book.module';
+import { EmployeeModule } from './employee/employee.module';
 
 
 
@@ -9,6 +10,7 @@ import { BookModule } from './book/book.module';
   imports: [
     AdminModule,
     BookModule,
+      EmployeeModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -20,6 +22,7 @@ import { BookModule } from './book/book.module';
       synchronize: true
 
     }),
+  
  
 
     ],
