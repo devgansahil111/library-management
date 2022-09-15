@@ -4,7 +4,6 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
-import { GetBooksDto } from './dto/get-book.dto';
 
 @Injectable()
 export class BookService {
@@ -39,8 +38,9 @@ export class BookService {
 
   //*************************************************************************************************************************** */
 
-  async findAll(getbookDto:GetBooksDto):Promise<Book[]> {
-    return this.bookRepository.find({})
+  async findAll() {
+    const books = await this.bookRepository.find({});
+    return books;
   }
 
   //****************************************************************************************************************************** */
@@ -56,11 +56,11 @@ export class BookService {
 
 
 
- async updateBook(id: string, updateBookDto: UpdateBookDto):Promise<Book> {
+ async updateBook(id: string, updateBookDto: UpdateBookDto) {
 const book = await this.bookRepository.findOneBy({id});
 if(!book){
   throw new NotFoundException();
-  }
+}
     return
   }
 

@@ -17,7 +17,6 @@ export class CreateBookDto {
     @IsString()
     category:string
 
-    @IsString()
-    deletedAt: Date
+   
 
 }

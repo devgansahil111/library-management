@@ -17,7 +17,7 @@ export class AdminService {
   ){}
 
 
-  async signUp(createAdminDto: CreateAdminDto) :Promise<Admin> {
+  async signUp(createAdminDto: CreateAdminDto) {
     try{
       const{username,password,email} = createAdminDto;
 
@@ -48,7 +48,7 @@ export class AdminService {
 
     async signIn(
        createAdminDto:CreateAdminDto,
-    ): Promise <{accessToken:string}>{
+    ){
       const{username,password} = createAdminDto
       const admin = await this.adminRepository.findOneBy({username})
 

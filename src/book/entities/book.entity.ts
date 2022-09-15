@@ -1,4 +1,5 @@
-import {Entity,PrimaryGeneratedColumn,Column} from 'typeorm'
+import { Order } from 'src/order/order.entity'
+import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
 
 
 @Entity()
@@ -23,16 +24,17 @@ import {Entity,PrimaryGeneratedColumn,Column} from 'typeorm'
     quantity: number
 
    //  @Column()
-   //  borrow: Id,price,timestamps,return-null,refund,fine-null,comments
+   //  borrow: bookId,studentid,timestamps,return-null,refund,fine-null,comments
    //order: orderid ,
 
+   @OneToMany(() => Order, (order) => order.book, {
+      cascade: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    })
+    order: Order[];
 
-
-    @Column({nullable:true})
-   deletedAt: Date
-
-   @Column({default:false})
-   isDeleted:Boolean
+   
 
 }
 
