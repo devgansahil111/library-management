@@ -6,6 +6,7 @@ export class GetStudentsFilterDto {
     @IsEnum(StudentGender)
     gender?: StudentGender;
 
+    // filter
     @IsOptional()
     @IsString()
     search?: string;
