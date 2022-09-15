@@ -23,13 +23,13 @@ export class BookController {
     return this.bookService.findById(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-  //   return this.bookService.update(+id, updateBookDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+    return this.bookService.updateBook(id, updateBookDto);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.bookService.remove(+id);
-  // }
+   @Delete(':id')
+   remove(@Param('id') id: string) {
+     return this.bookService.deleteBook(id);
+   }
 }

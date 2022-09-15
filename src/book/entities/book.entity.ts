@@ -1,4 +1,5 @@
-import { Order } from 'src/order/order.entity'
+
+// import { Issue } from 'src/issuer/issue.entity'
 import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
 
 
@@ -24,12 +25,12 @@ import {Entity,PrimaryGeneratedColumn,Column,OneToMany} from 'typeorm'
     quantity: number
 
 
-   @OneToMany(() => Order, (order) => order.book, {
-      cascade: true,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    })
-    order: Order[];
+   // @OneToMany(() => Issue, (issue) => issue.book, {
+   //    cascade: true,
+   //    onDelete: 'CASCADE',
+   //    onUpdate: 'CASCADE',
+   //  })
+   //  issue: Issue[];
     
 
    

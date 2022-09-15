@@ -54,17 +54,28 @@ export class BookService {
     return found;
   }
 
-
+//***************************************************************************************************************************************
 
  async updateBook(id: string, updateBookDto: UpdateBookDto) {
-const book = await this.bookRepository.findOneBy({id});
+let  book = await this.bookRepository.findOneBy({id});
+// console.log(book);
+
 if(!book){
   throw new NotFoundException();
 }
-    return
+book.bookName = updateBookDto.bookName
+   await this.bookRepository.save(book);
+    return book
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+//*************************************************************************************************************************
+
+
+   async deleteBook(id: string){
+    const result = await this.bookRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    }
   }
 }
