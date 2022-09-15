@@ -18,10 +18,10 @@ export class BookController {
     return this.bookService.findAll({});
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.bookService.findOne(+id);
-  // }
+  @Get(':id')
+  findById(@Param('id') id: string) :Promise<Book>{
+    return this.bookService.findById(id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {

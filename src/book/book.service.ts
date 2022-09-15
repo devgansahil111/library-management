@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -46,15 +46,25 @@ export class BookService {
   //****************************************************************************************************************************** */
 
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findById(id: string):Promise<Book> {
+    const found = await this.bookRepository.findOne({where:{id}});
+    if(!found){
+      throw new NotFoundException(`Book with ${id} not found`)
+    }
+    return found;
   }
 
-  // update(id: number, updateBookDto: UpdateBookDto) {
-  //   return `This action updates a #${id} book`;
-  // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} book`;
-  // }
+
+ async updateBook(id: string, updateBookDto: UpdateBookDto):Promise<Book> {
+const book = await this.bookRepository.findOneBy({id});
+if(!book){
+  throw new NotFoundException();
+  }
+    return
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} book`;
+  }
 }
