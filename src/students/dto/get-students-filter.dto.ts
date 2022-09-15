@@ -1,4 +1,4 @@
-import { StudentGender } from "../students.model";
+import { StudentGender } from "../student-gender.enum";
 import { IsOptional, IsString, IsEnum } from 'class-validator';
 
 export class GetStudentsFilterDto {
