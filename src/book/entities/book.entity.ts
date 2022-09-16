@@ -1,6 +1,5 @@
-
-import { Employee } from 'src/employee/entities/employee.entity'
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import { Issue } from './issue.entity'
 
 
 @Entity()
@@ -21,16 +20,16 @@ export class Book {
    @Column()
    category: string
 
-   @Column()
+   @Column({default:[]})
    quantity: number
 
    @Column({ default: false })
    available: boolean
 
 
-   @ManyToOne(() => Employee, (employee) => employee.book,
+   @ManyToOne(() => Issue, (issue) => issue.book,
    {onDelete:"NO ACTION"})
-   employee: Employee
+   issue: Issue
 
 }
 

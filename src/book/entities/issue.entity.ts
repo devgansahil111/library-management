@@ -1,4 +1,4 @@
-import { Book } from 'src/book/entities/book.entity';
+
 import {
     Column,
     CreateDateColumn,
@@ -6,10 +6,11 @@ import {
     PrimaryGeneratedColumn,
     OneToMany
 } from 'typeorm';
+import { Book } from './book.entity';
 
 
 @Entity()
-export class Employee {
+export class Issue {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -27,7 +28,7 @@ export class Employee {
     @Column({ default: 0 })
     fine: number
 
-    @OneToMany(() => Book, (book) => book.employee,
+    @OneToMany(() => Book, (book) => book.issue,
     {cascade: true})
     book: Book[];
 }
