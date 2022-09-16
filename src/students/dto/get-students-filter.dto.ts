@@ -1,4 +1,4 @@
-import { StudentGender } from "../students.model";
+import { StudentGender } from "../student-gender.enum";
 import { IsOptional, IsString, IsEnum } from 'class-validator';
 
 export class GetStudentsFilterDto {
@@ -6,6 +6,7 @@ export class GetStudentsFilterDto {
     @IsEnum(StudentGender)
     gender?: StudentGender;
 
+    // filter
     @IsOptional()
     @IsString()
     search?: string;

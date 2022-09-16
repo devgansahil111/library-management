@@ -11,5 +11,5 @@ export class CreateStudentDto {
   password: string;
 
   @IsNotEmpty()
-  phone: number;
+  phone: string;
 }
