@@ -7,6 +7,9 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
+  SerializeOptions,
+  ClassSerializerInterceptor
 } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { GetStudentsFilterDto } from './dto/get-students-filter.dto';
@@ -15,6 +18,10 @@ import { StudentGender } from './student-gender.enum';
 import { StudentsService } from './students.service';
 
 @Controller('students')
+@UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({
+  excludePrefixes: ['id', 'phone', 'password'],
+})
 export class StudentsController {
   constructor(private studentsService: StudentsService) {}
 
@@ -28,7 +35,7 @@ export class StudentsController {
     return this.studentsService.getStudentById(id);
   }
 
-  @Post()
+  @Post('/signup')
   createStudent(@Body() createStudentDto: CreateStudentDto) {
     return this.studentsService.createStudent(createStudentDto);
   }
