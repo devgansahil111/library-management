@@ -15,15 +15,22 @@ export class Issue {
     id: string;
 
 
+    @Column()
+    studentId : string
+
+    @Column()
+    bookId : string
+
+
 
     @CreateDateColumn({
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP(3)',
+     type: 'timestamp',
+     default: () => 'CURRENT_TIMESTAMP(3)',
     })
     issueAt: Date;
 
-    @Column({ type: Date }) 
-    retutnAt: Date
+   @Column({ type: 'date' })
+    returnAt : string;
 
     @Column({ default: 0 })
     fine: number

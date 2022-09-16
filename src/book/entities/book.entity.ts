@@ -20,7 +20,7 @@ export class Book {
    @Column()
    category: string
 
-   @Column({default:[]})
+   @Column()
    quantity: number
 
    @Column({ default: false })
