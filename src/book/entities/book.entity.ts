@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 // import { Issue } from './issue.entity'
 
 @Entity()
@@ -23,6 +23,15 @@ export class Book {
 
   @Column()
   available: Boolean;
+
+  @CreateDateColumn()
+  issued_At: Date;
+
+  @CreateDateColumn()
+  returned_At: Date;
+
+  @Column()
+  fine: number;
 
   // @ManyToOne(() => Issue, (issue) => issue.book,
   // {onDelete:"NO ACTION"})
