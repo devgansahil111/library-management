@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AdminService } from './admin.service';
-import { AdminController } from './admin.controller';
-import { Admin } from './entities/admin.entity';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
+import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { RolesGuard } from './roles.guards';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: 'topSecret51',
@@ -18,8 +19,8 @@ import { JwtStrategy } from './jwt.strategy';
       },
     }),
   ],
-  controllers: [AdminController],
-  providers: [AdminService, JwtStrategy],
+  controllers: [UserController],
+  providers: [UserService, JwtStrategy, RolesGuard],
   exports: [JwtStrategy, PassportModule]
 })
 export class AdminModule {}

@@ -1,7 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
+export enum Role {
+    ADMIN = 'admin',
+    ISSUER = 'issuer',
+    GUEST ='guest'
+};
+
 @Entity()
-export class Admin {
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -13,4 +19,9 @@ export class Admin {
 
   @Column()
   password: string;
+
+  @Column()
+  role: Role;
 }
+
+
