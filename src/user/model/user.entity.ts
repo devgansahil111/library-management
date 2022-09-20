@@ -19,6 +19,9 @@ export class UserEntity {
     @Column()
     password:string
 
+    // @Column()
+    // borrowBook: Date;
+
     @Column({
         type:"enum",
         enum: Role,
