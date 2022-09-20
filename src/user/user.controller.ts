@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Res,
@@ -58,11 +57,11 @@ export class UserController {
     return this.userService.deleteOne(id);
   }
 
-//   @UseGuards(JwtAuthGuard, UserIsUserGuard)
-//   @Put(':id')
-//   updateOne(@Param('id') id: string, @Body() user: User): Observable<any> {
-//     return this.userService.updateOne(id, user);
-//   }
+  //   @UseGuards(JwtAuthGuard, UserIsUserGuard)
+  //   @Put(':id')
+  //   updateOne(@Param('id') id: string, @Body() user: User): Observable<any> {
+  //     return this.userService.updateOne(id, user);
+  //   }
 
   @hasRoles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -73,4 +72,14 @@ export class UserController {
   ): Observable<User> {
     return this.userService.updateRoleOfUser(id, user);
   }
+
+  // @hasRoles(Role.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Post('/borrow')
+  // borrowBook(@Body() user: User) {
+  //   return this.userService.borrowBook(user).pipe(
+  //     map((user: User) => user),
+  //     catchError((err) => of({ error: err.message })),
+  //   );
+  // }
 }

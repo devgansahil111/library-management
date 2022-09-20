@@ -111,4 +111,8 @@ export class UserService {
   findByMail(email: string): Observable<User> {
     return from(this.userRepository.findOne({ where: { email } }));
   }
+
+  // borrowBook(user: User) {
+  //   return from(this.userRepository.findOne({ where: { user } }));
+  // }
 }
