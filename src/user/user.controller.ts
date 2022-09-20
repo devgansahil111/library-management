@@ -6,52 +6,71 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
-  SerializeOptions,
-  ClassSerializerInterceptor,
-  UseGuards
+  Res,
+  UseGuards,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { catchError, map, Observable, of } from 'rxjs';
+import { Role, User } from './model/user.interface';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { hasRoles } from 'src/auth/decorators/roles.decorator';
+import { UserIsUserGuard } from 'src/auth/guards/UserIsUser.guard';
 
-@Controller('user')
-// @UseGuards(AuthGuard())
-@UseInterceptors(ClassSerializerInterceptor)
-@SerializeOptions({
-  excludePrefixes: ['id', 'password'],
-})
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/signup')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.signUp(createUserDto);
+  @Post('signup')
+  create(@Body() user: User): Observable<User | Object> {
+    return this.userService.create(user).pipe(
+      map((user: User) => user),
+      catchError((err) => of({ error: err.message })),
+    );
   }
 
-  @Post('/signin')
-  signin(@Body() createUserDto: CreateUserDto) {
-    return this.userService.signIn(createUserDto);
+  @Post('login')
+  login(@Body() user: User): Observable<Object> {
+    return this.userService.login(user).pipe(
+      map((jwt: string) => {
+        return { access_token: jwt };
+      }),
+    );
   }
 
+  @Get(':id')
+  findOne(@Param() params): Observable<User> {
+    return this.userService.findOne(params.id);
+  }
+
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  findAll() {
+  findAll(): Observable<User[]> {
     return this.userService.findAll();
   }
 
-  @Get('/:id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Delete(':id')
+  deleteOne(@Param('id') id: string): Observable<User> {
+    return this.userService.deleteOne(id);
   }
 
-  @Patch('/:id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+//   @UseGuards(JwtAuthGuard, UserIsUserGuard)
+//   @Put(':id')
+//   updateOne(@Param('id') id: string, @Body() user: User): Observable<any> {
+//     return this.userService.updateOne(id, user);
+//   }
 
-  @Delete('/:id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Put(':id/role')
+  updateRoleOfUser(
+    @Param('id') id: string,
+    @Body() user: User,
+  ): Observable<User> {
+    return this.userService.updateRoleOfUser(id, user);
   }
 }

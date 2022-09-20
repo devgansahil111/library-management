@@ -1,39 +1,45 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-// import { Issue } from './issue.entity'
+import { UserEntity } from 'src/user/model/user.entity'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, BeforeUpdate } from 'typeorm'
+
+
 
 @Entity()
-export class Book {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class BookEntity {
 
-  @Column({ unique: true })
-  bookName: string;
+   @PrimaryGeneratedColumn('uuid')
+   id: string
 
-  @Column()
-  description: string;
+   @Column()
+   name: string
 
-  @Column()
-  authorName: string;
+   @Column({ unique: true })
+   ISBN: string
 
-  @Column()
-  category: string;
+   @Column()
+   category: string
 
-  @Column()
-  quantity: number;
+   @Column()
+   slug: string
 
-  @Column()
-  available: Boolean;
+   @Column()
+   price: number
 
-  @CreateDateColumn()
-  issued_At: Date;
+   @Column()
+   quantity: number
 
-  @CreateDateColumn()
-  returned_At: Date;
+   @Column({type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
+   createdAt: Date;
 
-  @Column()
-  fine: number;
+   @Column({type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
+   updatedAt: Date;    
 
-  // @ManyToOne(() => Issue, (issue) => issue.book,
-  // {onDelete:"NO ACTION"})
-  // issue: Issue
+   @BeforeUpdate()
+   updateTimestamp() {
+       this.updatedAt = new Date;
+   }
+
+   
+   @ManyToOne(type => UserEntity, user => user.book)
+    author: UserEntity;
+
 }

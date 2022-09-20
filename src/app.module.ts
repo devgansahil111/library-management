@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdminModule } from './user/user.module';
+import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 @Module({
   imports: [
-    AdminModule,
+    UserModule,
     BookModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
