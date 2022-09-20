@@ -1,79 +1,114 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Role, User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { catchError, from, map, Observable, switchMap, throwError } from 'rxjs';
+import { AuthService } from 'src/auth/services/auth.service';
+import { Any, Repository } from 'typeorm';
+import { UserEntity } from './model/user.entity';
+import { Role, User } from './model/user.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private jwtService: JwtService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    private authService: AuthService,
   ) {}
 
-  async signUp(createUserDto: CreateUserDto) {
-    const { username, password, email, role } = createUserDto;
+  create(user: User): Observable<User> {
+    return this.authService.hashPassword(user.password).pipe(
+      switchMap((passwordHash: string) => {
+        const newUser = new UserEntity();
 
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(password, salt);
+        newUser.username = user.username;
+        newUser.email = user.email;
+        newUser.password = passwordHash;
+        newUser.role = user.role;
 
-    let data = this.userRepository.create({
-      username,
-      email,
-      password: hashedPassword,
-      role
-    });
-    try {
-      data = await this.userRepository.save(data);
-      return data;
-    } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('Email Already Exists!');
-      } else {
-        throw new InternalServerErrorException();
-      }
-    }
+        return from(this.userRepository.save(newUser)).pipe(
+          map((user: User) => {
+            const { password, ...result } = user;
+            return result;
+          }),
+          catchError((err) => throwError(err)),
+        );
+      }),
+    );
   }
 
-  async signIn(createUserDto: CreateUserDto) {
-    const { email, password } = createUserDto;
-    // console.log(createUserDto);
-    
-    const user = await this.userRepository.findOne({ email: email });
-    // console.log(user);
-    
+  findOne(id: string): Observable<User> {
+    return from(this.userRepository.findOne({ where: { id } })).pipe(
+      map((user: User) => {
+        // console.log(user);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const payload = { email };
-      const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
-    } else {
-      throw new UnauthorizedException('Please check your login credentials');
-    }
+        const { password, ...result } = user;
+        return result;
+      }),
+    );
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(): Observable<User[]> {
+    return from(this.userRepository.find()).pipe(
+      map((users: User[]) => {
+        users.forEach(function (v) {
+          delete v.password;
+        });
+        return users;
+      }),
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  deleteOne(id: string): Observable<any> {
+    return from(this.userRepository.delete(id));
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  updateOne(id: string, user: User): Observable<any> {
+    delete user.email;
+    delete user.password;
+    delete user.role;
+
+    return from(this.userRepository.update(id, user));
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  updateRoleOfUser(id: string, user: User): Observable<any> {
+    return from(this.userRepository.update(id, user));
+  }
+
+  login(user: User): Observable<string> {
+    return this.validateUser(user.email, user.password).pipe(
+      switchMap((user: User) => {
+        console.log(user);
+
+        if (user) {
+          return this.authService
+            .generateJWT(user)
+            .pipe(map((jwt: string) => jwt));
+        } else {
+          return 'Wrong Credentials';
+        }
+      }),
+    );
+  }
+
+  validateUser(email: string, password: string): Observable<User> {
+    return from(this.userRepository.findOne({ where: { email } })).pipe(
+      switchMap((user: User) =>
+        this.authService.comparePasswords(password, user.password).pipe(
+          map((match: boolean) => {
+            if (match) {
+              const { password, ...result } = user;
+              console.log(result);
+
+              return result;
+            } else {
+              throw Error;
+            }
+          }),
+        ),
+      ),
+    );
+  }
+
+  findByMail(email: string): Observable<User> {
+    return from(this.userRepository.findOne({ where: { email } }));
   }
 }

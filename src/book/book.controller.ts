@@ -1,5 +1,6 @@
 import {
   Controller,
+  Request,
   Get,
   Post,
   Body,
@@ -7,46 +8,56 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
+  Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
+import { hasRoles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Role } from 'src/user/model/user.interface';
 import { BookService } from './book.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { Book } from './entities/book.entity';
-import { Roles } from '../user/roles.decorator';
-import { Role } from 'src/user/entities/user.entity';
-import { PassportModule } from '@nestjs/passport';
+import { Book } from './entities/book.interface';
+// import { UserIsAuthorGuard } from './guards/user-is-author.guard';
 
 @Controller('book')
-// @UseGuards(AuthGuard())
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
-  @Post('/add')
-  @Roles(Role.ADMIN)
-  add(@Body() createBookDto: CreateBookDto) {
-    return this.bookService.add(createBookDto);
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post()
+  create(@Body() book: Book, @Request() req): Observable<Book> {
+    const user = req.user;
+    return this.bookService.create(user, book);
   }
 
-  @Get('/list')
-  findAll() {
-    return this.bookService.findAll();
+  // @UseGuards(JwtAuthGuard)
+  @Get()
+  findBookEntries(@Query('userId') userId: any): Observable<Book[]> {
+    if (userId == null) {
+      return this.bookService.findAll();
+    } else {
+      return this.bookService.findByUser(userId);
+    }
   }
 
-  @Get('/:id')
-  findById(@Param('id') id: string) {
-    return this.bookService.findById(id);
+  // @Get(':id')
+  // findOne(@Param('id') id: string): Observable<Book> {
+  //   return this.bookService.findOne({ where: { id } });
+  // }
+
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Put(':id')
+  updateOne(@Param('id') id: string, @Body() book: Book): Observable<Book> {
+    return this.bookService.updateOne(id, book);
   }
 
-  @Patch('/:id')
-  @Roles(Role.ADMIN)
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.bookService.updateBook(id, updateBookDto);
-  }
-
-  @Delete('/:id')
-  @Roles(Role.ADMIN)
-  remove(@Param('id') id: string) {
-    return this.bookService.deleteBook(id);
+  @hasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Delete(':id')
+  deleteOne(@Param('id') id: string): Observable<any> {
+    return this.bookService.deleteOne(id);
   }
 }
