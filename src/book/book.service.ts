@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { User } from 'src/user/model/user.interface';
@@ -15,9 +15,11 @@ export class BookService {
   constructor(
     @InjectRepository(BookEntity)
     private readonly bookRepository: Repository<BookEntity>,
-    private userService: UserService
+    @Inject(forwardRef(() => UserService))
+    private userService: UserService,
   ) {}
 
+  // bool create
   create(user: User, book: Book): Observable<Book> {
     book.author = user;
     // console.log(book);
@@ -34,26 +36,18 @@ generateSlug(name: string): Observable<string> {
 
 
 }
-// const newBook = new BookEntity();
-// return from(this.bookRepository.save(newBook)).pipe(
-//   map((book:Book)=> {
-//     const {...result} = book;
-//     return result
-//   }),
-//   catchError(err => throwError(err))
-// )
-//  }
  
-
+// find all books
 findAll() :Observable<Book[]> {
   return from(this.bookRepository.find({relations:['author']}));
 }
+
 
 findByUser(userId:any):Observable<Book[]>{
   console.log(userId);
   
   return from(this.bookRepository.find({
-    where:{
+    where:{ 
       author : userId
     },
     relations:['author']
@@ -63,16 +57,14 @@ findByUser(userId:any):Observable<Book[]>{
 }
 
 
-// findOne(id: string): Observable<Book> {
-//   return from(this.bookRepository.findOne({where:{id}}, {relations: ['author']}));
-// }
-
+//update book
 updateOne(id: string, book: Book): Observable<Book> {
   return from(this.bookRepository.update(id, book)).pipe(
       switchMap(() => this.bookRepository.findOne({where:{id}}))
   )
 }
 
+//delete book
 deleteOne(id: string): Observable<any> {
   return from(this.bookRepository.delete(id));
 }
@@ -80,3 +72,4 @@ deleteOne(id: string): Observable<any> {
 
 
 }
+ 

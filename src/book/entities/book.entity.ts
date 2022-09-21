@@ -1,5 +1,7 @@
+// import { IssueEntity } from 'src/issue/model/issue.entity'
+import { IssueEntity } from 'src/issue/model/issue.entity'
 import { UserEntity } from 'src/user/model/user.entity'
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, BeforeUpdate } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, BeforeUpdate, JoinColumn, OneToOne, OneToMany } from 'typeorm'
 
 
 
@@ -41,5 +43,14 @@ export class BookEntity {
    
    @ManyToOne(type => UserEntity, user => user.book)
     author: UserEntity;
+
+
+    @OneToMany(type => IssueEntity, issue => issue.books)
+    issue: IssueEntity[];
+
+
+   //  @OneToOne(() => IssueEntity)
+   //  @JoinColumn()
+   //  issue: IssueEntity
 
 }
