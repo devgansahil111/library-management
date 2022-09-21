@@ -28,7 +28,7 @@ export class UserController {
       catchError((err) => of({ error: err.message })),
     );
   }
-
+ // No autherization required here
   @Post('login')
   login(@Body() user: User): Observable<Object> {
     return this.userService.login(user).pipe(
