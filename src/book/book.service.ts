@@ -19,7 +19,6 @@ export class BookService {
     private userService: UserService,
   ) {}
 
-  // bool create
   create(user: User, book: Book): Observable<Book> {
     book.author = user;
     // console.log(book);
@@ -37,11 +36,10 @@ generateSlug(name: string): Observable<string> {
 
 }
  
-// find all books
+
 findAll() :Observable<Book[]> {
   return from(this.bookRepository.find({relations:['author']}));
 }
-
 
 findByUser(userId:any):Observable<Book[]>{
   console.log(userId);
@@ -57,14 +55,16 @@ findByUser(userId:any):Observable<Book[]>{
 }
 
 
-//update book
+// findOne(id: string): Observable<Book> {
+//   return of(this.bookRepository.findOne({where:{id}}, {relations: ['author']}));
+// }
+
 updateOne(id: string, book: Book): Observable<Book> {
   return from(this.bookRepository.update(id, book)).pipe(
       switchMap(() => this.bookRepository.findOne({where:{id}}))
   )
 }
 
-//delete book
 deleteOne(id: string): Observable<any> {
   return from(this.bookRepository.delete(id));
 }
