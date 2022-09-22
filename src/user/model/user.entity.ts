@@ -20,9 +20,6 @@ export class UserEntity {
     @Column()
     password:string
 
-    // @Column()
-    // borrowBook: Date;
-
     @Column({
         type:"enum",
         enum: Role,
@@ -37,6 +34,8 @@ export class UserEntity {
 
     @OneToMany(type => BookEntity, book => book.author)
     book: BookEntity[];
+
     @OneToMany(type => IssueEntity, issue => issue.user)
     issue: IssueEntity[];
+    
 }
